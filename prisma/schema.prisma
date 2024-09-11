@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Duck {
+  id    Int     @id @default(autoincrement())
+  password String
+  email String  @unique
+  name  String?
+  quacks Quack[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  followers  Duck[]  @relation(name: "DuckToDuck")
+  following Duck[]   @relation(name: "DuckToDuck")
+}
+
+model Quack {
+  quackId        Int     @id @default(autoincrement())
+  content   String
+  published Boolean @default(false)
+  author    Duck    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  likes Int @default(0)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
